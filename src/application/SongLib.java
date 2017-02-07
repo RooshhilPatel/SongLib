@@ -29,25 +29,21 @@ import javafx.scene.text.Text;
 public class SongLib extends Application {
 	
 	static Stage listStage;
-	static Scene scene2;
 	static Button addButton;
 	static Object getClass;
 	
 	public void start(Stage primaryStage) {
 		try {
 			listStage = primaryStage;
-			GridPane root = makeGridPane();
-			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
+			
+			 SongLib.listStage.setResizable(false);
+			
 			FXMLLoader loader = new FXMLLoader();   
-		      loader.setLocation(
-		         getClass().getResource("/view/List.fxml"));
-		      AnchorPane root2 = (AnchorPane)loader.load();
+		      loader.setLocation(getClass().getResource("/view/List.fxml"));
+		      AnchorPane root = (AnchorPane)loader.load();
 		      ListController listController = loader.getController();
 		      listController.start(primaryStage);
-		      Scene sceneTwo = new Scene(root2, 200, 300);
-		      scene2 = sceneTwo;
+		      Scene scene = new Scene(root, 670, 300);
 			
 			listStage.setScene(scene);
 			listStage.show();
@@ -170,7 +166,6 @@ public class SongLib extends Application {
 					 insertToList(songList, songbox.getText());
 					 random1.setText(songList.get(i).name);
 					 i++;
-					 listStage.setScene(scene2);
 					 //song.Song(songbox.getText(), albumbox.getText());
 				 }
 				 else {

@@ -76,8 +76,12 @@ public class ListController {
 		   alert.showAndWait();
 	   }
 	   
-	   @FXML protected void handleButtonAction(ActionEvent event) {
-	        obsList.set(0, "WORD");
+	   @FXML protected void addButtonAction(ActionEvent event) {
+	        obsList.set(0, "Added");
+	    }
+	   
+	   @FXML protected void deleteButtonAction(ActionEvent event) {
+	        obsList.set(0, "Deleted");
 	    }
 	   
 	   private void showItemInputDialog(Stage mainStage) {                
