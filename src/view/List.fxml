@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.textfield.*?>
+
+
+<AnchorPane 
+ xmlns:fx="http://javafx.com/fxml/1" 
+ xmlns="http://javafx.com/javafx/8.0.60"
+ fx:controller="view.ListController">
+   <children>
+   <HBox spacing="10" alignment="bottom_right" GridPane.columnIndex="0" 
+          GridPane.rowIndex="2">
+          <TextField fx:id="songField" promptText="Song Name"
+               prefWidth="90"/>
+          <TextField fx:id="albumField" promptText="Album Name"
+               prefWidth="90"/>
+          <TextField fx:id="artistField" promptText="Artist Name"
+               prefWidth="90"/>
+          <TextField fx:id="yearField" promptText="Year"
+               prefWidth="90"/>
+     </HBox>
+     <Button id="button"  text="Add"
+            onAction="#handleButtonAction" fx:id="button"
+            AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="100.0"/>
+      <Button id="button2"  text="Delete"
+            onAction="#handleButtonAction" fx:id="button2"
+            AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0"/>
+      <ListView fx:id="listView"
+      	prefHeight="200.0" 
+      	prefWidth="270.0" 
+      	AnchorPane.bottomAnchor="10.0" 
+      	AnchorPane.leftAnchor="10.0" 
+      	AnchorPane.rightAnchor="10.0" 
+      	AnchorPane.topAnchor="60.0" />
+   </children>
+</AnchorPane>
