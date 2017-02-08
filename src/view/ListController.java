@@ -1,5 +1,6 @@
 package view;
 
+import java.util.Collections;
 import java.util.Optional;
 
 //import application.Song;
@@ -12,6 +13,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ListController {
@@ -23,6 +25,7 @@ public class ListController {
 	   @FXML private TextField albumField;
 	   @FXML private TextField artistField;
 	   @FXML private TextField yearField;
+	   @FXML private Text songInfo;
 
 	   private ObservableList<String> obsList;              					//private observable list
 	  
@@ -42,24 +45,29 @@ public class ListController {
 	      listView
 	        .getSelectionModel()
 	        .selectedIndexProperty()
-	        .addListener(
-	           (obs, oldVal, newVal) -> 
-	               showItemInputDialog(mainStage));
+	        .addListener((obs, oldVal, newVal) -> showItem());
 	   }
 	   
 	   //KEEEP THIS DO NOT DELETE
-	    /*
-	   @FXML private void showItem() {                
 
-		   String content = "Index: " + listView.getSelectionModel().getSelectedIndex() + 
-				   "\nValue: " + listView.getSelectionModel().getSelectedItem();
+	   @FXML private void showItem() {   
+	   	   String item = listView.getSelectionModel().getSelectedItem();
+		   int index = listView.getSelectionModel().getSelectedIndex();
+		   //String artist = application.SongLib.songList.get(index).getSongArtist();
+
+		   String content = "Index: " + index + "\nValue: " + item; //+ "\nArtist: " + artist;
 		   songInfo.setText(content);
-
-	   }*/
+	   }
+	   
 	   @FXML private void addButtonAction(ActionEvent event) {
 		   	String newSong = songField.getText();
 	        application.SongLib.insertToList(newSong);
 			obsList.add(newSong);
+			FXCollections.sort(obsList);
+			if(obsList.size() == 1){
+				// select the first item
+			    listView.getSelectionModel().select(0);
+			}
 	   }
 	   
 	   @FXML private void deleteButtonAction(ActionEvent event) {
@@ -71,9 +79,12 @@ public class ListController {
 			   alert.setContentText(null);
 			   alert.showAndWait();
 		   }
-	        obsList.remove(songField.getText());
+		   String item = listView.getSelectionModel().getSelectedItem();
+		   application.SongLib.deleteFromList(item);
+	       obsList.remove(item);
 	    }
-
+	   
+	   /*
 	   private void showItemInputDialog(Stage mainStage) {                
 		   String item = listView.getSelectionModel().getSelectedItem();
 		   int index = listView.getSelectionModel().getSelectedIndex();
@@ -87,7 +98,7 @@ public class ListController {
 		   if (result.isPresent()) { 
 			   obsList.set(index, result.get());
 		   }
-	   }
+	   }*/
 
 
 	}

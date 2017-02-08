@@ -52,6 +52,7 @@
       	
      <VBox spacing="10" alignment="bottom_right" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="60.0">
           <Text text="Details"/>
+          <Text fx:id="songInfo"/>
      </VBox>
      
    </children>
