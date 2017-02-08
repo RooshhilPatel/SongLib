@@ -1,48 +1,38 @@
 package view;
 
-import java.util.Collections;
 import java.util.Optional;
 
+//import application.Song;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.GridPane;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 public class ListController {
 	      
-	   @FXML         
-	   ListView<String> listView;                
+	   @FXML ListView<String> listView;											//strings to be displayed in the listView
+	   
+	   //initializes the fx:id from List.fxml to be used by button
+	   @FXML private TextField songField;
+	   @FXML private TextField albumField;
+	   @FXML private TextField artistField;
+	   @FXML private TextField yearField;
 
-	   private ObservableList<String> obsList;              
+	   private ObservableList<String> obsList;              					//private observable list
 	  
 	   public void start(Stage mainStage) {                
 	      // create an ObservableList 
 	      // from an ArrayList 
-			
-	      obsList = FXCollections.observableArrayList(                               
-	                 "Giants",                               
-	                 "Patriots",
-                     "49ers",
-                     "Rams",
-                     "Packers",
-                     "Colts",
-                     "Cowboys",
-                     "Broncos",
-                     "Vikings",
-                     "Dolphins",
-                     "Titans",
-                     "Seahawks",
-                     "Steelers",
-	                 "Jaguars");  
-	      Collections.sort(obsList, String.CASE_INSENSITIVE_ORDER);
+		   application.SongLib.songToStringList(application.SongLib.songList);
+		   obsList = FXCollections.observableArrayList(application.SongLib.songNameList);
+		    
+	      
 	      listView.setItems(obsList);  
 	      
 	      // select the first item
@@ -57,33 +47,33 @@ public class ListController {
 	               showItemInputDialog(mainStage));
 	   }
 	   
-	   private void showItem(Stage mainStage) {                
-		   Alert alert = 
-				   new Alert(AlertType.INFORMATION);
-		   alert.initOwner(mainStage);
-		   alert.setTitle("List Item");
-		   alert.setHeaderText(
-				   "Selected list item properties");
+	   //KEEEP THIS DO NOT DELETE
+	    /*
+	   @FXML private void showItem() {                
 
-		   String content = "Index: " + 
-				   listView.getSelectionModel()
-		   .getSelectedIndex() + 
-		   "\nValue: " + 
-		   listView.getSelectionModel()
-		   .getSelectedItem();
+		   String content = "Index: " + listView.getSelectionModel().getSelectedIndex() + 
+				   "\nValue: " + listView.getSelectionModel().getSelectedItem();
+		   songInfo.setText(content);
 
-		   alert.setContentText(content);
-		   alert.showAndWait();
+	   }*/
+	   @FXML private void addButtonAction(ActionEvent event) {
+		   	String newSong = songField.getText();
+	        application.SongLib.insertToList(newSong);
+			obsList.add(newSong);
 	   }
 	   
-	   @FXML protected void addButtonAction(ActionEvent event) {
-	        obsList.set(0, "Added");
+	   @FXML private void deleteButtonAction(ActionEvent event) {
+		   //idk y the delete error isn't coming
+		   if(application.SongLib.songList == null){ 
+			   Alert alert = new Alert(AlertType.WARNING);
+			   alert.setTitle("Deleting Error!");
+			   alert.setHeaderText("You are trying to delete from an empty list");
+			   alert.setContentText(null);
+			   alert.showAndWait();
+		   }
+	        obsList.remove(songField.getText());
 	    }
-	   
-	   @FXML protected void deleteButtonAction(ActionEvent event) {
-	        obsList.set(0, "Deleted");
-	    }
-	   
+
 	   private void showItemInputDialog(Stage mainStage) {                
 		   String item = listView.getSelectionModel().getSelectedItem();
 		   int index = listView.getSelectionModel().getSelectedIndex();

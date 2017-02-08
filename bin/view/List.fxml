@@ -15,38 +15,42 @@
  xmlns:fx="http://javafx.com/fxml/1" 
  xmlns="http://javafx.com/javafx/8.0.60"
  fx:controller="view.ListController">
+ 
    <children>
-   <HBox spacing="10" alignment="bottom_right" GridPane.columnIndex="0" 
-          GridPane.rowIndex="2" AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="10.0">
-          <TextField fx:id="songField" promptText="Song Name"
-               prefWidth="100"/>
-          <TextField fx:id="albumField" promptText="Album Name"
-               prefWidth="100"/>
-          <TextField fx:id="artistField" promptText="Artist Name"
-               prefWidth="100"/>
-          <TextField fx:id="yearField" promptText="Year"
-               prefWidth="100"/>
+   	<HBox 
+	   spacing="10" alignment="bottom_right" GridPane.columnIndex="0" 
+       GridPane.rowIndex="2" AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="10.0">
+       
+       <TextField fx:id="songField" promptText="Song Name" prefWidth="100"/>
+       <TextField fx:id="albumField" promptText="Album Name" prefWidth="100"/>
+       <TextField fx:id="artistField" promptText="Artist Name" prefWidth="100"/>
+       <TextField fx:id="yearField" promptText="Year" prefWidth="100"/>
      </HBox>
      
-     <Text text="Songs"
-     		AnchorPane.topAnchor="37.0" AnchorPane.leftAnchor="150"/>
+     <Text text="Songs" AnchorPane.topAnchor="37.0" AnchorPane.leftAnchor="150"/>
      
-     <Button id="button"  text="Add"
-            onAction="#addButtonAction" fx:id="button"
-            AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="120.0"/>
-      <Button id="button2"  text="Delete"
-            onAction="#deleteButtonAction" fx:id="button2"
-            AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="560.0" AnchorPane.rightAnchor="10.0"/>
+     <Button 
+     	id="addButton"  text="Add"
+        onAction="#addButtonAction" 
+        AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="120.0"
+      />
+      
+      <Button 
+  		id="deleteButton"  text="Delete"
+        onAction="#deleteButtonAction"
+        AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="560.0" AnchorPane.rightAnchor="10.0"
+      />
+            
       <ListView fx:id="listView"
       	prefHeight="200.0" 
       	prefWidth="400.0" 
       	AnchorPane.bottomAnchor="10.0" 
       	AnchorPane.leftAnchor="10.0" 
       	AnchorPane.rightAnchor="320.0" 
-      	AnchorPane.topAnchor="60.0" />
+      	AnchorPane.topAnchor="60.0" 
+      />
       	
-     <VBox spacing="10" alignment="bottom_right" AnchorPane.rightAnchor="135.0"
-          AnchorPane.topAnchor="60.0">
+     <VBox spacing="10" alignment="bottom_right" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="60.0">
           <Text text="Details"/>
      </VBox>
      
