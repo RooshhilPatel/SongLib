@@ -2,6 +2,12 @@
 
 package application;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -72,7 +78,9 @@ public class SongLib extends Application {
 		if(songList == null){
 			return; 
 		}
-		
+		if(song.isEmpty()){
+			return;
+		}
 		int i = 0;
 		while(songList.get(i).name.compareTo(song) != 0){
 			i++;
@@ -126,9 +134,76 @@ public class SongLib extends Application {
 			j++;
 		}
 	}
+	
+	public static void save(String fileName) throws FileNotFoundException {
+	    PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
+	    for (Song song : songList){
+	        pw.println(song.getSongName());
+	    	pw.println(song.getSongArtist());
+	    	pw.println(song.getSongAlbum());
+	    	pw.println(song.getSongYear());
+	    }
+	    pw.close();
+	}
+	
+	public static boolean isNumeric(String s) {  
+	    return s.matches("[-+]?\\d*\\.?\\d+");  
+	}
+	
+	public static int numOfLines(String FileName) throws IOException{
+		int lines  = 0;
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(FileName));
+			lines = 0;
+			while (reader.readLine() != null) lines++;
+			reader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return lines;
+	}
+	
+	public static void readFile(String FileName) throws FileNotFoundException{
+		try (BufferedReader br = new BufferedReader(new FileReader(FileName)))
+        {
+            String sSongLine;
+            String sArtistLine;
+            String sAlbumLine;
+            String sYearLine;
+            int newYear = 0;
+            int lines = numOfLines(FileName) -3;
+            int i = 0;
+            
+            while (i != lines){
+            		sSongLine = br.readLine();
+            		sArtistLine = br.readLine();
+            		sAlbumLine = br.readLine();
+            		sYearLine = br.readLine();
+            		
+            		//set year if a number is entered
+        		   	if(sYearLine == ""){
+        		   		if(isNumeric(sYearLine) == true){
+        		   			newYear = Integer.valueOf(sYearLine);
+        		   		}
+        		   	}
+            		
+            		insertToList(sSongLine, sArtistLine, sAlbumLine, newYear);
+            		i++;
+            }
 
-	public static void main(String[] args) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+	}
+
+	public static void main(String[] args){
 		songList.clear();
+		try {
+			readFile("currentSongs.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		launch(args);
 	}
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Rooshhil Patel and Akhila Narayan -->
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -50,22 +51,22 @@
       	AnchorPane.topAnchor="60.0" 
       />
       	
-     <VBox spacing="10" alignment="bottom_right" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="60.0">
+     <VBox fx:id="editView1" spacing="10" alignment="bottom_right" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="60.0">
           <Text text="Details"/>
           <Text fx:id="songInfo"/>
      </VBox>
      
-     <VBox fx:id="editView" spacing="1" alignment="top_center" 
+     <VBox fx:id="editView2" spacing="1" alignment="top_center" 
      	AnchorPane.leftAnchor="376.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="53.0" AnchorPane.bottomAnchor="10.0">
           <Text text="Details"/>
 		  <Text id="editView" text="Song:"/>
-     	  <TextField id="editView" promptText="Song Name"/>
+     	  <TextField fx:id="editViewSong" promptText="Song Name"/>
      	  <Text id="editView" text="Artist:"/>
-     	  <TextField id="editView" promptText="Artist Name"/>
+     	  <TextField fx:id="editViewArtist" promptText="Artist Name"/>
      	  <Text id="editView" text="Album:"/>
-     	  <TextField id="editView" promptText="Album Name"/>
+     	  <TextField fx:id="editViewAlbum" promptText="Album Name"/>
      	  <Text id="editView" text="Year:"/>
-     	  <TextField id="editView" promptText="Year"/>
+     	  <TextField fx:id="editViewYear" promptText="Year"/>
      </VBox>
      
      <Button 
