@@ -3,6 +3,7 @@
 package application;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -47,7 +48,7 @@ public class SongLib extends Application {
 	public static ArrayList<String> songNameList = new ArrayList<String>();		//list of songs by name with type string
 	
 	//insert method array list
-	public static void insertToList(String song, String artist, String album,int year){
+	public static void insertToList(String song, String artist, String album,String year){
 		Song newSong = new Song(song, artist, album, year);
 
 		if(songList == null){
@@ -167,12 +168,11 @@ public class SongLib extends Application {
 	public static void readFile(String FileName) throws FileNotFoundException{
 		try (BufferedReader br = new BufferedReader(new FileReader(FileName)))
         {
-            String sSongLine;
-            String sArtistLine;
-            String sAlbumLine;
-            String sYearLine;
-            int newYear = 0;
-            int lines = numOfLines(FileName) -3;
+            String sSongLine = "";
+            String sArtistLine = "";
+            String sAlbumLine = "";
+            String sYearLine = "";
+            int lines = numOfLines(FileName);
             int i = 0;
             
             while (i != lines){
@@ -181,15 +181,8 @@ public class SongLib extends Application {
             		sAlbumLine = br.readLine();
             		sYearLine = br.readLine();
             		
-            		//set year if a number is entered
-        		   	if(sYearLine == ""){
-        		   		if(isNumeric(sYearLine) == true){
-        		   			newYear = Integer.valueOf(sYearLine);
-        		   		}
-        		   	}
-            		
-            		insertToList(sSongLine, sArtistLine, sAlbumLine, newYear);
-            		i++;
+            		insertToList(sSongLine, sArtistLine, sAlbumLine, sYearLine);
+            		i+=4;
             }
 
         } catch (IOException e) {
@@ -199,10 +192,13 @@ public class SongLib extends Application {
 
 	public static void main(String[] args){
 		songList.clear();
-		try {
-			readFile("currentSongs.txt");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		File f = new File("currentSongs.txt");
+		if(f.exists() && !f.isDirectory()) { 
+			try {
+				readFile("currentSongs.txt");
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		launch(args);
 	}

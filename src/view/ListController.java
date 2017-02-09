@@ -57,6 +57,7 @@ public class ListController {
 	      
 	      // select the first item
 	      listView.getSelectionModel().select(0);
+	      showItem();
 
 	      // set listener for the items
 	      listView
@@ -65,7 +66,10 @@ public class ListController {
 	        .addListener((obs, oldVal, newVal) -> showItem());
 	   }
 	   
-	   @FXML private void showItem() {   
+	   @FXML private void showItem() {
+		   if(obsList.isEmpty()){
+			   return;
+		   }
 	   	   String item = listView.getSelectionModel().getSelectedItem();
 		   int index = listView.getSelectionModel().getSelectedIndex();
 		   if(index < 0){
@@ -74,7 +78,7 @@ public class ListController {
 		   
 		   String album = SongLib.songList.get(index).getSongAlbum();
 		   String artist = SongLib.songList.get(index).getSongArtist();
-		   int year = SongLib.songList.get(index).getSongYear();
+		   String year = SongLib.songList.get(index).getSongYear();
 
 		   String content = "Song: " + item + 
 				   "\nArtist: " + artist + "\nAlbum: " + album + "\nYear: " + year;
@@ -85,33 +89,56 @@ public class ListController {
 		    return s.matches("[-+]?\\d*\\.?\\d+");  
 		}
 	   
-	   public static boolean hasDuplicates(ArrayList<Song> songs, String songName, String artistName) {
-		   if(songs.size() == 1){
-			  if(songs.get(0).getSongName().compareToIgnoreCase(songName) == 0){
-				  if(songs.get(0).getSongArtist().compareToIgnoreCase(artistName) == 0){
-					  return true;
-				  }
-			  }
+	   public static boolean hasDuplicates(ArrayList<Song> songs, String songName, String artistName){
+		   int i = 0;
+		   final List<String> usedSongNames = new ArrayList<String>();
+		   final List<String> usedArtistNames = new ArrayList<String>();
+		   while(i != songs.size()){
+			   usedSongNames.add(songs.get(i).getSongName());
+			   usedArtistNames.add(songs.get(i).getSongArtist());
+			   i++;
+		   }
+		   i =0;
+		   while(i != songs.size()){
+			   if(usedSongNames.get(i).compareToIgnoreCase(songName) == 0){
+				   if(usedArtistNames.get(i).compareToIgnoreCase(artistName) == 0){
+					   return true;
+				   }
+			   }
+			   i++;
 		   }
 		   
-		    final List<String> usedSongNames = new ArrayList<String>();
-		    for (int i = 0; i < songs.size(); i++) {
-		    	final String name = songs.get(i).getSongName();
+		   return false;
+	   }
+	   
+	   //false: you can edit ========= true: you cannot
+	   public boolean hasEditDuplicates(ArrayList<Song> songs, String songName, String artistName) {
+		   if(songs.size() == 1){
+			  return false;
+		   }
+		   
+		   int i = 0;
+		   final List<String> usedSongNames = new ArrayList<String>();
+		   final List<String> usedArtistNames = new ArrayList<String>();
+		   while(i != songs.size()){
+			   usedSongNames.add(songs.get(i).getSongName());
+			   usedArtistNames.add(songs.get(i).getSongArtist());
+			   i++;
+		   }
 
-		        if (usedSongNames.contains(songName)) {
-		        	int index = SongLib.songList.indexOf(songName);
-			   		if(index < 0){
-			   			index = 0;
-					}
-		        	if(songs.get(index).getSongArtist().compareToIgnoreCase(artistName) == 0){
-		        		return true;
-		        	}
-		        }
-		        
-		        usedSongNames.add(name);
-		    }
-
-		    return false;
+		   if(usedSongNames.contains(songName)){
+			   int index = usedSongNames.indexOf(songName); 
+			   int selIndex = listView.getSelectionModel().getSelectedIndex();
+			   if(usedArtistNames.get(index).compareToIgnoreCase(artistName) == 0){
+				   if(selIndex == index){
+					   return false;
+				   }
+				   
+				   return true;
+			   }
+		   }
+		   
+		   return false;
 		}
 		
 		
@@ -127,8 +154,7 @@ public class ListController {
 		   	String newSong = songField.getText();
 		   	String newArtist = artistField.getText();
 		   	String newAlbum = albumField.getText();
-		   	String year = yearField.getText();
-		   	int newYear = 0; 													//default year to -1 if not entered
+		   	String newYear = yearField.getText();													//default year to -1 if not entered
 		   	
 		   	//error if song and/or artist fields are empty
 		   	if(songField.getText().isEmpty() == true || artistField.getText().isEmpty() == true){
@@ -138,20 +164,14 @@ public class ListController {
 		   	
 		   	//if song already exists
 		   	if(hasDuplicates(SongLib.songList, newSong, newArtist) == true) {
-		   		int index = SongLib.songList.indexOf(newSong);
-		   		if(index < 0){
-		   			index = 0;
-				}
-		   		if(SongLib.songList.get(index).getSongArtist().compareToIgnoreCase(newArtist) == 0){
 			   		error("Duplicate Add");
 			   		return;
-		   		}
 		   	}
 		   	
 		   	//set year if a number is entered
 		   	if(!yearField.getText().isEmpty()){
-		   		if(isNumeric(year) == true){
-		   			newYear = Integer.valueOf(yearField.getText());
+		   		if(isNumeric(newYear) == true && Integer.parseInt(newYear) >=0){
+		   			
 		   		}else{
 		   			error("Invalid Year");
 			   		return;
@@ -173,6 +193,13 @@ public class ListController {
 				// select the first item
 			    listView.getSelectionModel().select(0);
 			}
+			
+			songField.setText("");
+			artistField.setText("");
+			albumField.setText("");
+			yearField.setText("");
+			
+			
 	   }
 	   
 	   @FXML private void deleteButtonAction(ActionEvent event) {
@@ -238,6 +265,7 @@ public class ListController {
 		   if(index < 0){
 			   index = 0;
 		   }
+
 		   String album = SongLib.songList.get(index).getSongAlbum();
 		   String artist = SongLib.songList.get(index).getSongArtist();
 		   String year = String.valueOf(SongLib.songList.get(index).getSongYear());
@@ -259,11 +287,10 @@ public class ListController {
 		   			artist = editViewArtist.getText();
 		   			album = editViewAlbum.getText();
 		   			year = editViewYear.getText();
-				   	int newYear = 0; 													//default year to -1 if not entered
 				  //set year if a number is entered
 				   	if(!editViewYear.getText().isEmpty()){
-				   		if(isNumeric(year) == true){
-				   			newYear = Integer.valueOf(editViewYear.getText());
+				   		if(isNumeric(year) == true && Integer.parseInt(year) >=0){
+				   			
 				   		}else{
 				   			error("Invalid Year");
 					   		return;
@@ -271,22 +298,16 @@ public class ListController {
 				   	}
 		   			
 				   	//if song already exists
-				   	if(hasDuplicates(SongLib.songList, item, artist) == true) {
-				   		index = SongLib.songList.indexOf(item);
-				   		if(index < 0){
-				   			index = 0;
-						}
-				   		if(SongLib.songList.get(index).getSongArtist().compareToIgnoreCase(artist) == 0){
+				   	if(hasEditDuplicates(SongLib.songList, item, artist) == true) {
 					   		error("Duplicate Add");
 					   		return;
-				   		}
 				   	}
 
 				   	editView2.setVisible(false);
 				   		SongLib.songList.get(index).setSongName(item);
 				   		SongLib.songList.get(index).setArtistName(artist);
 				   		SongLib.songList.get(index).setAlbumName(album);
-				   		SongLib.songList.get(index).setYear(newYear);
+				   		SongLib.songList.get(index).setYear(year);
 				   		obsList.set(index, item);
 				   		if(obsList.size() >=2){
 					       //sort lists after editing
@@ -301,8 +322,7 @@ public class ListController {
 				   	editView1.setVisible(true);
 				   	editButton.setText("Edit");
 				   	edit = 0;
-		   		}
-		   		else {
+		   		}else{
 		   			editView2.setVisible(false);
 		   			editView1.setVisible(true);
 		   			editButton.setText("Edit");
@@ -330,7 +350,7 @@ public class ListController {
 		   		return;
 		   case "Invalid Year":
 			   	alert.setTitle("Adding Error!");
-		   		alert.setHeaderText("Must Enter a numeric Year");
+		   		alert.setHeaderText("Must Enter a valid year");
 		   		alert.setContentText(null);
 		   		alert.showAndWait();
 			   return;
@@ -388,10 +408,3 @@ public class ListController {
 
 	}
 
-/*
- * THINGS LEFT TO DO:
- * - check if year is 4 digits long && not past 2017 && >= 0000
- * - make it so that all entered songs are in textfile so that you can startup the app with songs already listed from last session
- * 			- the first song should be selected by default
- * - look through point deductions part
- */

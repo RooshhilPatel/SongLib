@@ -4,7 +4,7 @@ package application;
 
 public class Song {
 	
-	int year = 0;
+	String year = "";
 	String name = "";
 	String artist = "";
 	String album = "";
@@ -20,17 +20,8 @@ public class Song {
 		this.name = name;
 		this.artist = artist;
 	}
-	public Song(String name, String artist, int year){
-		this.name = name;
-		this.artist = artist;
-		this.year = year;
-	}
-	public Song(String name, String artist, String album){
-		this.name = name;
-		this.artist = artist;
-		this.album = album;
-	}
-	public Song(String name, String artist, String album, int year){
+	
+	public Song(String name, String artist, String album, String year){
 		this.name = name;
 		this.artist = artist;
 		this.album = album;
@@ -45,7 +36,7 @@ public class Song {
 	public String getSongAlbum(){
 		return this.album;
 	}
-	public int getSongYear(){
+	public String getSongYear(){
 		return this.year;
 	}
 	public void setSongName(String name){
@@ -57,7 +48,7 @@ public class Song {
 	public void setAlbumName(String album){
 		this.album = album;
 	}
-	public void setYear(int year){
+	public void setYear(String year){
 		this.year = year;
 	}
 	
