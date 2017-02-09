@@ -1,4 +1,8 @@
+/* Rooshhil Patel and Akhila Narayan */
+
 package view;
+
+import java.util.Optional;
 
 //import application.Song;
 import javafx.collections.FXCollections;
@@ -8,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
@@ -30,7 +35,8 @@ public class ListController {
 	   private int edit = 0;													//0 is edit, 1 is save
 
 	   private ObservableList<String> obsList;              					//private observable list
-	  
+	   private int numOfSongs = 0;
+	   
 	   public void start(Stage mainStage) {                
 	      // create an ObservableList 
 	      // from an ArrayList 
@@ -65,8 +71,8 @@ public class ListController {
 		   String artist = application.SongLib.songList.get(0).getSongArtist();
 		   int year = application.SongLib.songList.get(0).getSongYear();
 
-		   String content = "Index: " + index + "\nValue: " + item + 
-				   "\nAlbum: " + album + "\nArtist: " + artist + "\nYear: " + year;
+		   String content = "Index: " + index + "\nSong: " + item + 
+				   "\nArtist: " + artist + "\nAlbum: " + album + "\nYear: " + year;
 		   songInfo.setText(content);
 	   }
 	   
@@ -75,8 +81,8 @@ public class ListController {
 		}
 	   
 	   @FXML private void clearItems() {   
-		   String content = "Index: " + "\nValue: " +
-				   "\nAlbum: " + "\nArtist: " + "\nYear: ";
+		   String content = "Index: " + "\nSong: " +
+				   "\nArtist: " + "\nAlbum: " + "\nYear: ";
 		   songInfo.setText(content);
 	   }
 	   
@@ -88,10 +94,40 @@ public class ListController {
 		   	String year = yearField.getText();
 		   	int newYear = -1; 													//default year to -1 if not entered
 		   	
+		   	//if adding same 2 songs
+		   	int i;
+		   	for(i = 0; i < obsList.size(); i++) {
+			   	if(songField.getText().compareToIgnoreCase(obsList.get(i)) == 0 && artistField.getText().compareToIgnoreCase(obsList.get(i)) == 0){
+			   		Alert alert = new Alert(AlertType.WARNING);
+			   		alert.setTitle("Adding Error!");
+			   		alert.setHeaderText("This song already exists");
+			   		alert.setContentText(null);
+			   		alert.showAndWait();
+			   		return;
+			   	}
+		   	}
+		   	
+		   	//error if song and/or artist fields are empty
 		   	if(songField.getText().isEmpty() == true || artistField.getText().isEmpty() == true){
-		   		System.out.println("You need song and artist to insert a song stupid");
+		   		Alert alert = new Alert(AlertType.WARNING);
+		   		alert.setTitle("Adding Error!");
+		   		alert.setHeaderText("Must enter a song and artist");
+		   		alert.setContentText(null);
+		   		alert.showAndWait();
 		   		return;
 		   	}
+		   	
+		   	//if song already exists
+		   	/*
+		   	if() {
+		   		Alert alert = new Alert(AlertType.WARNING);
+		   		alert.setTitle("Adding Error!");
+		   		alert.setHeaderText("This exact song already exists");
+		   		alert.setContentText(null);
+		   		alert.showAndWait();
+		   		return;
+		   	}
+		   	 */
 		   	
 		   	//set year if a number is entered
 		   	if(year != null && year != "" && isNumeric(year) == true){
@@ -99,8 +135,18 @@ public class ListController {
 		   	}
 		   	
 		   	//add song with properties
-	        application.SongLib.insertToList(newSong, newArtist, newAlbum, newYear);
-			obsList.add(newSong);
+	        Alert alert = new Alert(AlertType.CONFIRMATION);
+	   		alert.setTitle("Adding Confirmation");
+	   		alert.setHeaderText("Are you sure you want to add this song?");
+	   		alert.setContentText(null);
+	   		
+	   		Optional<ButtonType> result = alert.showAndWait();
+	   		if (result.get() == ButtonType.OK){
+	   			application.SongLib.insertToList(newSong, newArtist, newAlbum, newYear);
+				obsList.add(newSong);
+				listView.getSelectionModel().select(numOfSongs);
+				numOfSongs++;
+	   		}
 			
 			//sort both lists
 			application.SongLib.sortList(application.SongLib.songList);
@@ -113,12 +159,22 @@ public class ListController {
 	   
 	   @FXML private void deleteButtonAction(ActionEvent event) {
 		   if(obsList.size() == 1){
-			   obsList.clear();
-			   application.SongLib.songList.clear();
-			   clearItems();
-			   return;
+			   	Alert alert = new Alert(AlertType.CONFIRMATION);
+		   		alert.setTitle("Delete Confirmation");
+		   		alert.setHeaderText("Are you sure you want to delete this song?");
+		   		alert.setContentText(null);
+		   		
+		   		Optional<ButtonType> result = alert.showAndWait();
+		   		if (result.get() == ButtonType.OK){
+				   obsList.clear();
+				   application.SongLib.songList.clear();
+				   clearItems();
+				   numOfSongs--;
+				   return;
+		   		}
 		   }
-		   //idk y the delete error isn't coming
+		   
+		   //delete from empty list
 		   if(application.SongLib.songList.isEmpty() == true){ 
 			   Alert alert = new Alert(AlertType.WARNING);
 			   alert.setTitle("Deleting Error!");
@@ -127,10 +183,20 @@ public class ListController {
 			   alert.showAndWait();
 			   return;
 		   }
-			   //delete selected item from listview and songList ArrayList
+		   
+		   //delete selected item from listview and songList ArrayList
+		   	Alert alert = new Alert(AlertType.CONFIRMATION);
+	   		alert.setTitle("Delete Confirmation");
+	   		alert.setHeaderText("Are you sure you want to delete this song?");
+	   		alert.setContentText(null);
+	   		
+	   		Optional<ButtonType> result = alert.showAndWait();
+	   		if (result.get() == ButtonType.OK){
 			   String item = listView.getSelectionModel().getSelectedItem();
 			   application.SongLib.deleteFromList(item);
 		       obsList.remove(item);
+		       numOfSongs--;
+	   		}
 		       
 		   if(obsList.size() >=2){
 		       //sort lists after deleting
@@ -141,9 +207,17 @@ public class ListController {
 	    }
 	   
 	   @FXML private void quitButtonAction(ActionEvent event) {
-		   obsList.clear();
-		   application.SongLib.songList.clear();
-		   System.exit(0);
+		   	Alert alert = new Alert(AlertType.CONFIRMATION);
+		   	alert.setTitle("Exit Confirmation");
+	   	  	alert.setHeaderText("Are you sure you want to exit?");
+	   		alert.setContentText(null);
+	   		
+	   		Optional<ButtonType> result = alert.showAndWait();
+	   		if (result.get() == ButtonType.OK){
+			   obsList.clear();
+			   application.SongLib.songList.clear();
+			   System.exit(0);
+	   		}
 	   }
 	   
 	   
@@ -154,9 +228,24 @@ public class ListController {
 			   editButton.setText("Save");
 			   edit = 1;
 		   }else{
-			   editView.setVisible(false);
-			   editButton.setText("Edit");
-			   edit = 0;
+			   	Alert alert = new Alert(AlertType.CONFIRMATION);
+			   	alert.setTitle("Edit Confirmation");
+		   	  	alert.setHeaderText("Are you sure you want to edit this song?");
+		   		alert.setContentText(null);
+		   		
+		   		Optional<ButtonType> result = alert.showAndWait();
+		   		if (result.get() == ButtonType.OK){
+		   		   //song gets edited
+		   			//insert check to see if the songs match! (did this for the adding 2 songs part)
+				   editView.setVisible(false);
+				   editButton.setText("Edit");
+				   edit = 0;
+		   		}
+		   		else {
+		   			editView.setVisible(false);
+		   			editButton.setText("Edit");
+		   			edit = 0;
+		   		}
 		   }
 
 	   }
@@ -164,4 +253,11 @@ public class ListController {
 
 	}
 
-
+/*
+ * THINGS LEFT TO DO:
+ * - not let edit with 2 same songs occur
+ * - check edit/save screen stuff
+ * - make it so that all entered songs are in textfile so that you can startup the app with songs already listed from last session
+ * 			- the first song should be selected by default
+ * - look through point deductions part
+ */

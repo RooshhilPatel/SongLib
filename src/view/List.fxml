@@ -22,8 +22,8 @@
        GridPane.rowIndex="2" AnchorPane.topAnchor="5.0" AnchorPane.leftAnchor="10.0">
        
        <TextField fx:id="songField" promptText="Song Name" prefWidth="100"/>
-       <TextField fx:id="albumField" promptText="Album Name" prefWidth="100"/>
        <TextField fx:id="artistField" promptText="Artist Name" prefWidth="100"/>
+       <TextField fx:id="albumField" promptText="Album Name" prefWidth="100"/>
        <TextField fx:id="yearField" promptText="Year" prefWidth="100"/>
      </HBox>
      
@@ -55,23 +55,28 @@
           <Text fx:id="songInfo"/>
      </VBox>
      
-     <VBox fx:id="editView" spacing="10" 
-     	alignment="top_center" 
-     	AnchorPane.leftAnchor="340.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="10.0">
+     <VBox fx:id="editView" spacing="1" alignment="top_center" 
+     	AnchorPane.leftAnchor="376.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="53.0" AnchorPane.bottomAnchor="10.0">
           <Text text="Details"/>
 		  <Text id="editView" text="Song:"/>
      	  <TextField id="editView" promptText="Song Name"/>
+     	  <Text id="editView" text="Artist:"/>
+     	  <TextField id="editView" promptText="Artist Name"/>
+     	  <Text id="editView" text="Album:"/>
+     	  <TextField id="editView" promptText="Album Name"/>
+     	  <Text id="editView" text="Year:"/>
+     	  <TextField id="editView" promptText="Year"/>
      </VBox>
      
      <Button 
      	fx:id="editButton" text="Edit" 
      	onAction="#editButtonAction" 
-     	AnchorPane.topAnchor="260.0" AnchorPane.leftAnchor="540.0" AnchorPane.rightAnchor="80.0"
+     	AnchorPane.topAnchor="263.0" AnchorPane.leftAnchor="540.0" AnchorPane.rightAnchor="80.0"
      />
      <Button 
 		id="quitButton" text="Quit" 
 		onAction="#quitButtonAction" 
-		AnchorPane.topAnchor="260.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="20.0"
+		AnchorPane.topAnchor="263.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="20.0"
 	/>
 
    </children>
