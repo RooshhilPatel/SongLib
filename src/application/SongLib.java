@@ -4,6 +4,7 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -40,8 +41,9 @@ public class SongLib extends Application {
 	public static ArrayList<String> songNameList = new ArrayList<String>();		//list of songs by name with type string
 	
 	//insert method array list
-	public static void insertToList(String song){
-		Song newSong = new Song(song);
+	public static void insertToList(String song, String artist, String album,int year){
+		Song newSong = new Song(song, artist, album, year);
+
 		if(songList == null){
 			songList = new ArrayList<Song>();
 			songList.add(newSong); 
@@ -97,9 +99,22 @@ public class SongLib extends Application {
 			j++;
 		}
 	}
+	//new class specially made to sort song objects by name
+	static class SongComparator implements Comparator<Song>
+	 {
+		public int compare(Song s1, Song s2)
+	    {
+	        return s1.getSongName().compareTo(s2.getSongName());
+	    }
+	 }
 	
-	//sorts the array list of songs
-	public static void sortList(ArrayList<String> s){
+	//sorts the array list of songs by comparing names
+	public static void sortList(ArrayList<Song> songs){
+		Collections.sort(songs, new SongComparator());
+	}
+	
+	//sorts the array list of songNames
+	public static void sortNameList(ArrayList<String> s){
 		Collections.sort(s, String.CASE_INSENSITIVE_ORDER);
 	}
 	

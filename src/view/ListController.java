@@ -1,8 +1,5 @@
 package view;
 
-import java.util.Collections;
-import java.util.Optional;
-
 //import application.Song;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,9 +7,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -25,7 +24,10 @@ public class ListController {
 	   @FXML private TextField albumField;
 	   @FXML private TextField artistField;
 	   @FXML private TextField yearField;
+	   @FXML private VBox editView;
+	   @FXML private Button editButton;
 	   @FXML private Text songInfo;
+	   private int edit = 0;													//0 is edit, 1 is save
 
 	   private ObservableList<String> obsList;              					//private observable list
 	  
@@ -34,6 +36,13 @@ public class ListController {
 	      // from an ArrayList 
 		   application.SongLib.songToStringList(application.SongLib.songList);
 		   obsList = FXCollections.observableArrayList(application.SongLib.songNameList);
+		   
+		   editView.setVisible(false);
+		   String cssLayout = "-fx-border-color: red;\n" +
+                   "-fx-border-insets: 5;\n" +
+                   "-fx-border-width: 3;\n" +
+                   "-fx-border-style: dashed;\n"; 
+		   editView.setStyle(cssLayout);
 		    
 	      
 	      listView.setItems(obsList);  
@@ -48,21 +57,53 @@ public class ListController {
 	        .addListener((obs, oldVal, newVal) -> showItem());
 	   }
 	   
-	   //KEEEP THIS DO NOT DELETE
-
 	   @FXML private void showItem() {   
 	   	   String item = listView.getSelectionModel().getSelectedItem();
 		   int index = listView.getSelectionModel().getSelectedIndex();
-		   //String artist = application.SongLib.songList.get(index).getSongArtist();
+		   
+		   String album = application.SongLib.songList.get(0).getSongAlbum();
+		   String artist = application.SongLib.songList.get(0).getSongArtist();
+		   int year = application.SongLib.songList.get(0).getSongYear();
 
-		   String content = "Index: " + index + "\nValue: " + item; //+ "\nArtist: " + artist;
+		   String content = "Index: " + index + "\nValue: " + item + 
+				   "\nAlbum: " + album + "\nArtist: " + artist + "\nYear: " + year;
+		   songInfo.setText(content);
+	   }
+	   
+	   public boolean isNumeric(String s) {  
+		    return s.matches("[-+]?\\d*\\.?\\d+");  
+		}
+	   
+	   @FXML private void clearItems() {   
+		   String content = "Index: " + "\nValue: " +
+				   "\nAlbum: " + "\nArtist: " + "\nYear: ";
 		   songInfo.setText(content);
 	   }
 	   
 	   @FXML private void addButtonAction(ActionEvent event) {
+		   //initiate everything
 		   	String newSong = songField.getText();
-	        application.SongLib.insertToList(newSong);
+		   	String newArtist = artistField.getText();
+		   	String newAlbum = albumField.getText();
+		   	String year = yearField.getText();
+		   	int newYear = -1; 													//default year to -1 if not entered
+		   	
+		   	if(songField.getText().isEmpty() == true || artistField.getText().isEmpty() == true){
+		   		System.out.println("You need song and artist to insert a song stupid");
+		   		return;
+		   	}
+		   	
+		   	//set year if a number is entered
+		   	if(year != null && year != "" && isNumeric(year) == true){
+		   		newYear = Integer.valueOf(yearField.getText());
+		   	}
+		   	
+		   	//add song with properties
+	        application.SongLib.insertToList(newSong, newArtist, newAlbum, newYear);
 			obsList.add(newSong);
+			
+			//sort both lists
+			application.SongLib.sortList(application.SongLib.songList);
 			FXCollections.sort(obsList);
 			if(obsList.size() == 1){
 				// select the first item
@@ -71,34 +112,54 @@ public class ListController {
 	   }
 	   
 	   @FXML private void deleteButtonAction(ActionEvent event) {
+		   if(obsList.size() == 1){
+			   obsList.clear();
+			   application.SongLib.songList.clear();
+			   clearItems();
+			   return;
+		   }
 		   //idk y the delete error isn't coming
-		   if(application.SongLib.songList == null){ 
+		   if(application.SongLib.songList.isEmpty() == true){ 
 			   Alert alert = new Alert(AlertType.WARNING);
 			   alert.setTitle("Deleting Error!");
 			   alert.setHeaderText("You are trying to delete from an empty list");
 			   alert.setContentText(null);
 			   alert.showAndWait();
+			   return;
 		   }
-		   String item = listView.getSelectionModel().getSelectedItem();
-		   application.SongLib.deleteFromList(item);
-	       obsList.remove(item);
+			   //delete selected item from listview and songList ArrayList
+			   String item = listView.getSelectionModel().getSelectedItem();
+			   application.SongLib.deleteFromList(item);
+		       obsList.remove(item);
+		       
+		   if(obsList.size() >=2){
+		       //sort lists after deleting
+		       application.SongLib.sortList(application.SongLib.songList);
+		       FXCollections.sort(obsList);
+		   }
+		       
 	    }
 	   
-	   /*
-	   private void showItemInputDialog(Stage mainStage) {                
-		   String item = listView.getSelectionModel().getSelectedItem();
-		   int index = listView.getSelectionModel().getSelectedIndex();
-
-		   TextInputDialog dialog = new TextInputDialog(item);
-		   dialog.initOwner(mainStage); dialog.setTitle("List Item");
-		   dialog.setHeaderText("Selected Item (Index: " + index + ")");
-		   dialog.setContentText("Enter name: ");
-
-		   Optional<String> result = dialog.showAndWait();
-		   if (result.isPresent()) { 
-			   obsList.set(index, result.get());
+	   @FXML private void quitButtonAction(ActionEvent event) {
+		   obsList.clear();
+		   application.SongLib.songList.clear();
+		   System.exit(0);
+	   }
+	   
+	   
+	   @FXML private void editButtonAction(ActionEvent event) {                
+		   
+		   if(edit == 0){
+			   editView.setVisible(true);
+			   editButton.setText("Save");
+			   edit = 1;
+		   }else{
+			   editView.setVisible(false);
+			   editButton.setText("Edit");
+			   edit = 0;
 		   }
-	   }*/
+
+	   }
 
 
 	}

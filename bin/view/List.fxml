@@ -55,5 +55,24 @@
           <Text fx:id="songInfo"/>
      </VBox>
      
+     <VBox fx:id="editView" spacing="10" 
+     	alignment="top_center" 
+     	AnchorPane.leftAnchor="340.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="10.0">
+          <Text text="Details"/>
+		  <Text id="editView" text="Song:"/>
+     	  <TextField id="editView" promptText="Song Name"/>
+     </VBox>
+     
+     <Button 
+     	fx:id="editButton" text="Edit" 
+     	onAction="#editButtonAction" 
+     	AnchorPane.topAnchor="260.0" AnchorPane.leftAnchor="540.0" AnchorPane.rightAnchor="80.0"
+     />
+     <Button 
+		id="quitButton" text="Quit" 
+		onAction="#quitButtonAction" 
+		AnchorPane.topAnchor="260.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="20.0"
+	/>
+
    </children>
 </AnchorPane>
